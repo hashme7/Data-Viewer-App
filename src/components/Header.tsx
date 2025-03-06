@@ -5,7 +5,7 @@ import { FaUserCircle } from "react-icons/fa";
 const Header: React.FC = () => {
   const [isOpen, setIsOpen] = useState<boolean>(false);
   return (
-    <header className="p-4 bg-white shadow-md flex items-center justify-between px-6">
+    <header className="p-4 bg-white flex items-center justify-between px-6">
       <div className="flex items-center justify-between w-full">
         <img src={logo} alt="G Synergy Logo" className="h-7 sm:h-10" />
         <h1 className="text-xl font-semibold text-gray-700">Data Viewer App</h1>
