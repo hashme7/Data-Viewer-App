@@ -11,10 +11,10 @@ const Sidebar: React.FC = () => {
   return (
     <aside className="md:w-64 w-16 h-full flex flex-col mt-4 z-10 ">
       <nav className="flex flex-col gap-2">
-        <SidebarItem icon={<MdOutlineStoreMallDirectory />} label="Store" />
-        <SidebarItem icon={<LuShapes />} label="SKU" />
-        <SidebarItem icon={<FaChartBar />} label="Planning" />
-        <SidebarItem icon={<MdOutlineInsertChart />} label="Chart" />
+        <SidebarItem icon={<MdOutlineStoreMallDirectory />} label="Store" to="/"/>
+        <SidebarItem icon={<LuShapes />} label="SKU" to="/sku"/>
+        <SidebarItem icon={<FaChartBar />} label="Planning" to="/planning"/>
+        <SidebarItem icon={<MdOutlineInsertChart />} label="Chart" to="/chart"/>
       </nav>
     </aside>
   );

@@ -1,0 +1,42 @@
+/* Table border */
+.ag-theme-alpine {
+    border-radius: 8px;
+    overflow: hidden;
+    font-family: 'Arial', sans-serif;
+}
+
+/* Header row styles */
+.ag-header {
+    background-color: #f5f5f5;
+    font-weight: bold;
+    font-size: 16px;
+}
+
+/* Cell styles */
+.ag-cell {
+    font-size: 14px;
+    padding: 10px;
+    border-bottom: 1px solid #ddd;
+}
+
+/* Center align headers */
+.ag-header-cell {
+    text-align: center;
+}
+
+/* Remove default grid lines */
+.ag-root .ag-row {
+    border-bottom: 1px solid #ddd !important;
+}
+
+/* Add custom padding to rows */
+.ag-row {
+    /* height: 50px !important; */
+}
+
+/* Customize delete button column */
+.custom-delete-btn {
+    cursor: pointer;
+    color: red;
+    font-size: 18px;
+}

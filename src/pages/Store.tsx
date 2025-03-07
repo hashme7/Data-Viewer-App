@@ -1,27 +1,44 @@
-import React from "react";
+import React, { useRef } from "react";
 import { AgGridReact } from "ag-grid-react";
 import "ag-grid-community/styles/ag-grid.css";
 import "ag-grid-community/styles/ag-theme-alpine.css";
 import { FaTrash } from "react-icons/fa";
-import { ColDef, ModuleRegistry, RowDragModule } from "ag-grid-community";
-import { ClientSideRowModelModule } from "ag-grid-community";
+import {
+  ColDef,
+  ModuleRegistry,
+  RowDragModule,
+  AllCommunityModule,
+} from "ag-grid-community";
 import Modal from "../components/Modal";
 import useStore from "../hooks/useStore";
-import "../css/storeTable.css";
+import "../css/Table.css";
 
-ModuleRegistry.registerModules([ClientSideRowModelModule, RowDragModule]);
+ModuleRegistry.registerModules([AllCommunityModule, RowDragModule]);
 
 const StorePage: React.FC = () => {
   const {
     rowData,
     isModalOpen,
-    newStore,
     handleOpenModal,
     handleCloseModal,
-    handleChange,
     handleAddStore,
     deleteRow,
   } = useStore();
+
+  const storeRef = useRef<HTMLInputElement>(null);
+  const cityRef = useRef<HTMLInputElement>(null);
+  const stateRef = useRef<HTMLInputElement>(null);
+
+  const AddStore = () => {
+    const newStore = {
+      store: storeRef.current?.value || "",
+      city: cityRef.current?.value || "",
+      state: stateRef.current?.value || "",
+    };
+
+    handleAddStore(newStore);
+    handleCloseModal();
+  };
 
   const columnDefs: ColDef[] = [
     {
@@ -48,13 +65,10 @@ const StorePage: React.FC = () => {
   ];
 
   return (
-    <div className="w-full h-screen bg-gray-300">
-      <div
-        className="ag-theme-alpine store-table-container h-fit"
-        style={{ height: "75vh", width: "100%" }}
-      >
+    <div className="w-full h-screen bg-gray-300 ag-theme-alpine">
+      <div className="h-fit" style={{ height: "75vh", width: "100%" }}>
         <AgGridReact
-          className="p-2"
+          className="p-2 ag-theme-alpine"
           rowData={rowData}
           columnDefs={columnDefs}
           rowDragManaged={true}
@@ -75,30 +89,24 @@ const StorePage: React.FC = () => {
         <h2 className="text-lg font-semibold mb-4">Add New Store</h2>
         <input
           type="text"
-          name="store"
+          ref={storeRef}
           placeholder="Store Name"
-          value={newStore.store}
-          onChange={handleChange}
-          className="w-full p-2 mb-2 border rounded"
+          className="w-full p-2 mb-2 border rounded "
         />
         <input
           type="text"
-          name="city"
+          ref={cityRef}
           placeholder="City"
-          value={newStore.city}
-          onChange={handleChange}
           className="w-full p-2 mb-2 border rounded"
         />
         <input
           type="text"
-          name="state"
+          ref={stateRef}
           placeholder="State"
-          value={newStore.state}
-          onChange={handleChange}
           className="w-full p-2 mb-4 border rounded"
         />
         <button
-          onClick={handleAddStore}
+          onClick={AddStore}
           className="px-4 py-2 bg-[#F28C76] hover:cursor-pointer text-black rounded"
         >
           Add Store

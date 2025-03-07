@@ -14,28 +14,19 @@ const useStore = () => {
   const dispatch = useDispatch();
 
   const [isModalOpen, setIsModalOpen] = useState(false);
-  const [newStore, setNewStore] = useState<StoreInput>({
-    store: "",
-    city: "",
-    state: "",
-  });
 
   const handleOpenModal = () => setIsModalOpen(true);
   const handleCloseModal = () => {
     setIsModalOpen(false);
-    setNewStore({ store: "", city: "", state: "" });
   };
 
-  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    setNewStore({ ...newStore, [e.target.name]: e.target.value });
-  };
 
-  const handleAddStore = () => {
+  const handleAddStore = useCallback((newStore: StoreInput) => {
     if (newStore.store && newStore.city && newStore.state) {
       dispatch(addStore({ id: rowData.length + 1, ...newStore }));
       handleCloseModal();
     }
-  };
+  }, []);
 
   const deleteRow = useCallback(
     (id: number) => {
@@ -47,10 +38,8 @@ const useStore = () => {
   return {
     rowData,
     isModalOpen,
-    newStore,
     handleOpenModal,
     handleCloseModal,
-    handleChange,
     handleAddStore,
     deleteRow,
   };
