@@ -2,12 +2,8 @@ import { useState, useCallback } from "react";
 import { useSelector, useDispatch } from "react-redux";
 import { RootState } from "../redux/store";
 import { addStore, deleteStore } from "../redux/slices/storeSlice";
+import { StoreInput } from "../types/interfaces";
 
-interface StoreInput {
-  store: string;
-  city: string;
-  state: string;
-}
 
 const useStore = () => {
   const rowData = useSelector((state: RootState) => state.stores);
@@ -19,7 +15,6 @@ const useStore = () => {
   const handleCloseModal = () => {
     setIsModalOpen(false);
   };
-
 
   const handleAddStore = useCallback((newStore: StoreInput) => {
     if (newStore.store && newStore.city && newStore.state) {
@@ -34,6 +29,8 @@ const useStore = () => {
     },
     [dispatch]
   );
+
+  
 
   return {
     rowData,

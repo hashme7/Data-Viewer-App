@@ -1,21 +1,27 @@
-import React, { useRef } from "react";
-import { AgGridReact } from "ag-grid-react";
-import "ag-grid-community/styles/ag-grid.css";
-import "ag-grid-community/styles/ag-theme-alpine.css";
+import React, { useRef, useState } from "react";
 import { FaTrash } from "react-icons/fa";
+import { AgGridReact } from "ag-grid-react";
 import {
-  ColDef,
+  AllCommunityModule,
+  ClientSideRowModelModule,
   ModuleRegistry,
   RowDragModule,
-  AllCommunityModule,
+  ColDef,
 } from "ag-grid-community";
 import Modal from "../components/Modal";
 import useStore from "../hooks/useStore";
 import "../css/Table.css";
+import ConfirmationModal from "../components/confirmationModal";
 
-ModuleRegistry.registerModules([AllCommunityModule, RowDragModule]);
+ModuleRegistry.registerModules([
+  ClientSideRowModelModule,
+  AllCommunityModule,
+  RowDragModule,
+]);
 
 const StorePage: React.FC = () => {
+  const [confirmModalOpen, setConfirmModalOpen] = useState(false);
+  const [selectedStoreId, setSelectedStoreId] = useState<number | null>(null);
   const {
     rowData,
     isModalOpen,
@@ -39,20 +45,30 @@ const StorePage: React.FC = () => {
     handleAddStore(newStore);
     handleCloseModal();
   };
+  const handleDeleteClick = (id: number) => {
+    setSelectedStoreId(id);
+    setConfirmModalOpen(true);
+  };
+  const handleConfirmDelete = (selectedStoreId: number) => {
+    if (selectedStoreId !== null) {
+      deleteRow(selectedStoreId);
+    }
+    setConfirmModalOpen(false);
+  };
 
   const columnDefs: ColDef[] = [
     {
       headerName: "",
       field: "id",
       cellRenderer: (params: any) => (
-        <button onClick={() => deleteRow(params.data.id)}>
+        <button onClick={() => handleDeleteClick(params.data.id)}>
           <FaTrash style={{ color: "black" }} />
         </button>
       ),
       width: 50,
     },
     {
-      headerName: ":",
+      headerName: "",
       width: 20,
       rowDrag: true,
       sortable: false,
@@ -65,8 +81,11 @@ const StorePage: React.FC = () => {
   ];
 
   return (
-    <div className="w-full h-screen bg-gray-300 ag-theme-alpine">
-      <div className="h-fit" style={{ height: "75vh", width: "100%" }}>
+    <div className="w-full h-screen bg-gray-300 ">
+      <div
+        className="h-fit ag-theme-alpine"
+        style={{ height: "75vh", width: "100%" }}
+      >
         <AgGridReact
           className="p-2 ag-theme-alpine"
           rowData={rowData}
@@ -112,6 +131,15 @@ const StorePage: React.FC = () => {
           Add Store
         </button>
       </Modal>
+      <ConfirmationModal
+        isOpen={confirmModalOpen}
+        onClose={() => setConfirmModalOpen(false)}
+        onConfirm={() =>
+          selectedStoreId && handleConfirmDelete(selectedStoreId)
+        }
+        title="Delete Store"
+        message="Are you sure you want to delete this store?"
+      />
     </div>
   );
 };

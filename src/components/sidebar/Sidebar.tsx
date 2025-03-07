@@ -13,7 +13,7 @@ const Sidebar: React.FC = () => {
       <nav className="flex flex-col gap-2">
         <SidebarItem icon={<MdOutlineStoreMallDirectory />} label="Store" to="/"/>
         <SidebarItem icon={<LuShapes />} label="SKU" to="/sku"/>
-        <SidebarItem icon={<FaChartBar />} label="Planning" to="/planning"/>
+        <SidebarItem icon={<FaChartBar />} label="Planning" to="/plan"/>
         <SidebarItem icon={<MdOutlineInsertChart />} label="Chart" to="/chart"/>
       </nav>
     </aside>

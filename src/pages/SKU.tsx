@@ -1,15 +1,19 @@
 import React, { useRef } from "react";
 import { AgGridReact } from "ag-grid-react";
-import "ag-grid-community/styles/ag-grid.css";
-import "ag-grid-community/styles/ag-theme-quartz.css";
 import {
-  ColDef,
+  AllCommunityModule,
+  ClientSideRowModelModule,
   ModuleRegistry,
   RowDragModule,
+  ColDef
+} from "ag-grid-community";
+
+ModuleRegistry.registerModules([
   ClientSideRowModelModule,
   AllCommunityModule,
-  themeAlpine,
-} from "ag-grid-community";
+  RowDragModule,
+]);
+
 import { FaTrash } from "react-icons/fa";
 import { useSelector } from "react-redux";
 import { RootState } from "../redux/store";
@@ -89,9 +93,8 @@ const SKU: React.FC = () => {
 
   return (
     <div className="w-full h-screen bg-gray-300 p-2 ag-theme-alpine">
-      <div className="h-fit" style={{ height: "75vh", width: "100%" }}>
+      <div className="h-[calc(100vh-12rem)] w-full ag-theme-alpine">
         <AgGridReact
-          theme={themeAlpine}
           columnDefs={columnDefs}
           rowData={skus || []}
           defaultColDef={{ resizable: true, sortable: true }}
