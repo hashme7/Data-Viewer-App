@@ -5,6 +5,24 @@ import { useCallback, useMemo } from "react";
 
 export const usePlanning = () => {
   const planningData = useSelector((state: RootState) => state.planning.data);
+  const skus = useSelector((state: RootState) => state.skus);
+  const stores = useSelector((state: RootState) => state.stores);
+
+  const getStoreName = useCallback(
+    (storeId: string) => {
+      const store = stores.find((s) => s.code == storeId);
+      return store ? store.name : storeId;
+    },
+    [stores]
+  );
+
+  const getSKUName = useCallback(
+    (skuId: string) => {
+      const sku = skus.find((s) => s.id === skuId);
+      return sku ? sku.label : skuId;
+    },
+    [skus]
+  );
   const getGmPercentCellStyle = (value: number) => {
     if (value >= 80) return { backgroundColor: "#86efac" };
     if (value >= 60) return { backgroundColor: "#fde047" };
@@ -86,6 +104,7 @@ export const usePlanning = () => {
         minWidth: 200,
         filter: true,
         sortable: true,
+        valueFormatter:(params)=>getStoreName(params.value)
       },
       {
         field: "sku",
@@ -93,6 +112,7 @@ export const usePlanning = () => {
         minWidth: 200,
         filter: true,
         sortable: true,
+        valueFormatter: (params) => getSKUName(params.value)
       },
       ...uniqueWeeks.map((week) => createWeekColumns(week)),
     ],

@@ -5,16 +5,7 @@ import {
   ClientSideRowModelModule,
   ModuleRegistry,
   RowDragModule,
-  ColDef
 } from "ag-grid-community";
-
-ModuleRegistry.registerModules([
-  ClientSideRowModelModule,
-  AllCommunityModule,
-  RowDragModule,
-]);
-
-import { FaTrash } from "react-icons/fa";
 import { useSelector } from "react-redux";
 import { RootState } from "../redux/store";
 import "../css/Table.css";
@@ -27,9 +18,15 @@ ModuleRegistry.registerModules([
   RowDragModule,
 ]);
 
+ModuleRegistry.registerModules([
+  ClientSideRowModelModule,
+  AllCommunityModule,
+  RowDragModule,
+]);
+
 const SKU: React.FC = () => {
   const skus = useSelector((state: RootState) => state.skus);
-  const { deleteSku, openModal, modalOpen, addSku, handleCloseModal } =
+  const { openModal, modalOpen, addSku, handleCloseModal, columnDefs } =
     useSku();
 
   const labelRef = useRef<HTMLInputElement>(null);
@@ -37,35 +34,6 @@ const SKU: React.FC = () => {
   const priceRef = useRef<HTMLInputElement>(null);
   const costRef = useRef<HTMLInputElement>(null);
   const departmentRef = useRef<HTMLInputElement>(null);
-
-  const columnDefs: ColDef[] = [
-    {
-      headerName: "",
-      width: 50,
-      cellRenderer: (params: any) => (
-        <button onClick={() => deleteSku(params.data.id)}>
-          <FaTrash style={{ color: "black" }} />
-        </button>
-      ),
-      autoHeight: false,
-    },
-    {
-      headerName: "SKU",
-      field: "label",
-      width: 250,
-      autoHeight: false,
-    },
-    {
-      headerName: "Price",
-      field: "price",
-      width: 90,
-    },
-    {
-      headerName: "Cost",
-      field: "cost",
-      width: 90,
-    },
-  ];
 
   if (!skus || skus.length === 0) {
     return (

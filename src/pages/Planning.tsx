@@ -1,7 +1,12 @@
 import React from "react";
 import { usePlanning } from "../hooks/usePlanning";
 import { AgGridReact } from "ag-grid-react";
-import { AllCommunityModule, ClientSideRowModelModule, ModuleRegistry, RowDragModule } from "ag-grid-community";
+import {
+  AllCommunityModule,
+  ClientSideRowModelModule,
+  ModuleRegistry,
+  RowDragModule,
+} from "ag-grid-community";
 
 ModuleRegistry.registerModules([
   ClientSideRowModelModule,
@@ -12,6 +17,7 @@ ModuleRegistry.registerModules([
 const Planning: React.FC = () => {
   const { planningData, columnDefs, defaultColDef, onGridReady } =
     usePlanning();
+
   return (
     <div className="h-[calc(100vh-12rem)] w-full ag-theme-alpine">
       <AgGridReact

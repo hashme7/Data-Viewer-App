@@ -1,6 +1,7 @@
 export interface Store {
   id: number;
-  store: string;
+  code: string;
+  name: string;
   city: string;
   state: string;
 }
@@ -14,7 +15,7 @@ export interface SKU {
 }
 
 export interface StoreInput {
-  store: string;
+  name: string;
   city: string;
   state: string;
 }

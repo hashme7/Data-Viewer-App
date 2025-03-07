@@ -1,12 +1,10 @@
 import React, { useRef, useState } from "react";
-import { FaTrash } from "react-icons/fa";
 import { AgGridReact } from "ag-grid-react";
 import {
   AllCommunityModule,
   ClientSideRowModelModule,
   ModuleRegistry,
   RowDragModule,
-  ColDef,
 } from "ag-grid-community";
 import Modal from "../components/Modal";
 import useStore from "../hooks/useStore";
@@ -21,6 +19,10 @@ ModuleRegistry.registerModules([
 
 const StorePage: React.FC = () => {
   const [confirmModalOpen, setConfirmModalOpen] = useState(false);
+  const handleDeleteClick = (id: number) => {
+    setSelectedStoreId(id);
+    setConfirmModalOpen(true);
+  };
   const [selectedStoreId, setSelectedStoreId] = useState<number | null>(null);
   const {
     rowData,
@@ -29,7 +31,8 @@ const StorePage: React.FC = () => {
     handleCloseModal,
     handleAddStore,
     deleteRow,
-  } = useStore();
+    columnDefs,
+  } = useStore(handleDeleteClick);
 
   const storeRef = useRef<HTMLInputElement>(null);
   const cityRef = useRef<HTMLInputElement>(null);
@@ -37,7 +40,7 @@ const StorePage: React.FC = () => {
 
   const AddStore = () => {
     const newStore = {
-      store: storeRef.current?.value || "",
+      name: storeRef.current?.value || "",
       city: cityRef.current?.value || "",
       state: stateRef.current?.value || "",
     };
@@ -45,10 +48,7 @@ const StorePage: React.FC = () => {
     handleAddStore(newStore);
     handleCloseModal();
   };
-  const handleDeleteClick = (id: number) => {
-    setSelectedStoreId(id);
-    setConfirmModalOpen(true);
-  };
+  
   const handleConfirmDelete = (selectedStoreId: number) => {
     if (selectedStoreId !== null) {
       deleteRow(selectedStoreId);
@@ -56,29 +56,7 @@ const StorePage: React.FC = () => {
     setConfirmModalOpen(false);
   };
 
-  const columnDefs: ColDef[] = [
-    {
-      headerName: "",
-      field: "id",
-      cellRenderer: (params: any) => (
-        <button onClick={() => handleDeleteClick(params.data.id)}>
-          <FaTrash style={{ color: "black" }} />
-        </button>
-      ),
-      width: 50,
-    },
-    {
-      headerName: "",
-      width: 20,
-      rowDrag: true,
-      sortable: false,
-      filter: false,
-    },
-    { headerName: "S.No", field: "id", width: 80 },
-    { headerName: "Store", field: "store", flex: 1 },
-    { headerName: "City", field: "city", flex: 1 },
-    { headerName: "State", field: "state", width: 100 },
-  ];
+  
 
   return (
     <div className="w-full h-screen bg-gray-300 ">
@@ -107,7 +85,7 @@ const StorePage: React.FC = () => {
       <Modal isOpen={isModalOpen} onClose={handleCloseModal}>
         <h2 className="text-lg font-semibold mb-4">Add New Store</h2>
         <input
-          type="text"
+          type="text"   
           ref={storeRef}
           placeholder="Store Name"
           className="w-full p-2 mb-2 border rounded "
