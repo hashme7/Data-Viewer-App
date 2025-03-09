@@ -5,16 +5,22 @@ import { useMemo, useState } from "react";
 import { IPlanning, Store, SKU } from "../types/interfaces";
 
 export const useChart = () => {
-  const storesData = useSelector((state: RootState) => state.stores);
-  const skusData = useSelector((state: RootState) => state.skus);
-  const planningData = useSelector((state: RootState) => state.planning.data);
-  const calendarData = useSelector((state: RootState) => state.calender.data);
+  const storesData = useSelector((state: RootState) => state.stores || []);
+  const skusData = useSelector((state: RootState) => state.skus || []);
+  const planningData = useSelector(
+    (state: RootState) => state.planning.data || []
+  );
+  const calendarData = useSelector(
+    (state: RootState) => state.calender.data || []
+  );
 
   const storeCodes = useMemo(
     () => storesData.map((store: Store) => store.code),
     [storesData]
   );
-  const [selectedStore, setSelectedStore] = useState(storeCodes[0] || "");
+  const [selectedStore, setSelectedStore] = useState(
+    storeCodes.length > 0 ? storeCodes[0] : ""
+  );
 
   const handleStoreChange = (event: React.ChangeEvent<HTMLSelectElement>) => {
     setSelectedStore(event.target.value);
@@ -152,7 +158,7 @@ export const useChart = () => {
             if (tooltipItem.datasetIndex === 0) {
               return `GM Dollars: $${value.toLocaleString()}`;
             } else {
-              return `GM %: ${value.toFixed(2)}%`; 
+              return `GM %: ${value.toFixed(2)}%`;
             }
           },
         },

@@ -9,6 +9,8 @@ import {
   Tooltip,
   Legend,
   PointElement,
+  LineController,
+  BarController,
 } from "chart.js";
 import { Bar } from "react-chartjs-2";
 import { useChart } from "../hooks/useChart";
@@ -23,7 +25,9 @@ ChartJS.register(
   PointElement,
   Title,
   Tooltip,
-  Legend
+  Legend,
+  LineController,
+  BarController
 );
 
 const Chart: React.FC = () => {
