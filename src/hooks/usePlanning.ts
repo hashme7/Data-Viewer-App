@@ -2,9 +2,10 @@ import { useSelector } from "react-redux";
 import { RootState } from "../redux/store";
 import { ColDef, ColGroupDef } from "ag-grid-community";
 import { useCallback, useMemo } from "react";
+import { selectPlanningSales } from "../redux/selectors/planningMatrix";
 
 export const usePlanning = () => {
-  const planningData = useSelector((state: RootState) => state.planning.data);
+  const planningData = useSelector(selectPlanningSales);
   const skus = useSelector((state: RootState) => state.skus);
   const stores = useSelector((state: RootState) => state.stores);
 
@@ -29,71 +30,101 @@ export const usePlanning = () => {
     if (value >= 40) return { backgroundColor: "#fb923c" };
     return { backgroundColor: "#fca5a5" };
   };
-  const createWeekColumns = (weekNumber: string): ColGroupDef => ({
-    headerName: `Week ${weekNumber.replace("W", "")}`,
-    children: [
-      {
-        field: `${weekNumber}.salesUnits`,
-        headerName: "Sales Units",
-        type: "numericColumn",
-        filter: "agNumberColumnFilter",
-        valueFormatter: (params: { value: number }) => params.value?.toFixed(2),
-        valueGetter: (params: { data: { weeks: any[] } }) => {
-          const weekData = params.data.weeks?.find(
-            (w: any) => w.week === weekNumber
-          );
-          return weekData?.salesUnits;
+  const createMonthColumns = (
+    month: string,
+    monthLabel: string,
+    weeksInMonth: string[]
+  ): ColGroupDef => ({
+    headerName: monthLabel,
+    children: weeksInMonth.map((weekNumber) => ({
+      headerName: `Week ${weekNumber.replace("W", "")}`,
+      children: [
+        {
+          field: `${weekNumber}.salesUnits`,
+          headerName: "Sales Units",
+          type: "numericColumn",
+          filter: "agNumberColumnFilter",
+          valueFormatter: (params: { value: number }) =>
+            params.value?.toFixed(2),
+          valueGetter: (params: { data: { weeks: Record<string, any[]> } }) => {
+            const weekData = params.data.weeks[month]?.find(
+              (w: any) => w.week === weekNumber
+            );
+            return weekData?.salesUnits;
+          },
         },
-      },
-      {
-        field: `${weekNumber}.salesDollars`,
-        headerName: "Sales Dollars",
-        type: "numericColumn",
-        valueFormatter: (params: { value: number }) =>
-          params.value ? `$ ${params.value.toFixed(2)}` : "$ 0.00",
-        valueGetter: (params: { data: { weeks: any[] } }) => {
-          const weekData = params.data.weeks?.find(
-            (w: any) => w.week === weekNumber
-          );
-          return weekData?.salesDollars;
+        {
+          field: `${weekNumber}.salesDollars`,
+          headerName: "Sales Dollars",
+          type: "numericColumn",
+          valueFormatter: (params: { value: number }) =>
+            params.value ? `$ ${params.value.toFixed(2)}` : "$ 0.00",
+          valueGetter: (params: { data: { weeks: Record<string, any[]> } }) => {
+            const weekData = params.data.weeks?.[month]?.find(
+              (w: any) => w.week === weekNumber
+            );
+            return weekData?.salesDollars;
+          },
         },
-      },
-      {
-        field: `${weekNumber}.gmDollars`,
-        headerName: "GM Dollars",
-        type: "numericColumn",
-        valueFormatter: (params: { value: number }) =>
-          params.value ? `$ ${params.value.toFixed(2)}` : "$ 0.00",
-        valueGetter: (params: { data: { weeks: any[] } }) => {
-          const weekData = params.data.weeks?.find(
-            (w: any) => w.week === weekNumber
-          );
-          return weekData?.gmDollars;
+        {
+          field: `${weekNumber}.gmDollars`,
+          headerName: "GM Dollars",
+          type: "numericColumn",
+          valueFormatter: (params: { value: number }) =>
+            params.value ? `$ ${params.value.toFixed(2)}` : "$ 0.00",
+          valueGetter: (params: { data: { weeks: Record<string, any[]> } }) => {
+            const weekData = params.data.weeks?.[month]?.find(
+              (w: any) => w.week === weekNumber
+            );
+            return weekData?.gmDollars;
+          },
         },
-      },
-      {
-        field: `${weekNumber}.gmPercent`,
-        headerName: "GM Percent",
-        type: "numericColumn",
-        valueFormatter: (params: { value: number }) =>
-          params.value ? `${params.value.toFixed(2)}%` : "0.00%",
-        cellStyle: (params: { value: number }) =>
-          getGmPercentCellStyle(params.value),
-        valueGetter: (params: { data: { weeks: any[] } }) => {
-          const weekData = params.data.weeks?.find(
-            (w: any) => w.week === weekNumber
-          );
-          return weekData?.gmPercent;
+        {
+          field: `${weekNumber}.gmPercent`,
+          headerName: "GM Percentage",
+          type: "numericColumn",
+          valueFormatter: (params: { value: number }) =>
+            params.value ? `${params.value.toFixed(2)}%` : "0.00%",
+          cellStyle: (params: { value: number }) =>
+            getGmPercentCellStyle(params.value),
+          valueGetter: (params: { data: { weeks: Record<string, any[]> } }) => {
+            const weekData = params.data.weeks?.[month]?.find(
+              (w: any) => w.week === weekNumber
+            );
+            return weekData?.gmPercentage;
+          },
         },
-      },
-    ],
+      ],
+    })),
   });
-  const uniqueWeeks = useMemo(() => {
-    const weeks = new Set<string>();
-    planningData.forEach((item) => {
-      item.weeks.forEach((week) => weeks.add(week.week));
+
+  const weeksByMonth = useMemo(() => {
+    const monthsMap = new Map<
+      string,
+      { monthLabel: string; weeks: string[] }
+    >();
+
+    planningData.forEach(({ weeks }) => {
+      Object.entries(weeks).forEach(([month, weekArray]) => {
+        if (!Array.isArray(weekArray)) return;
+        weekArray.forEach(
+          ({ week, monthLabel }: { week: string; monthLabel: string }) => {
+            if (!monthsMap.has(month)) {
+              monthsMap.set(month, { monthLabel, weeks: [] });
+            }
+            monthsMap.get(month)?.weeks.push(week);
+          }
+        );
+      });
     });
-    return Array.from(weeks).sort();
+
+    return Array.from(monthsMap.entries()).map(
+      ([month, { monthLabel, weeks }]) => ({
+        month,
+        monthLabel,
+        weeks: weeks.sort(),
+      })
+    );
   }, [planningData]);
 
   const columnDefs = useMemo<(ColDef | ColGroupDef)[]>(
@@ -104,7 +135,7 @@ export const usePlanning = () => {
         minWidth: 200,
         filter: true,
         sortable: true,
-        valueFormatter:(params)=>getStoreName(params.value)
+        valueFormatter: (params) => getStoreName(params.value),
       },
       {
         field: "sku",
@@ -112,12 +143,15 @@ export const usePlanning = () => {
         minWidth: 200,
         filter: true,
         sortable: true,
-        valueFormatter: (params) => getSKUName(params.value)
+        valueFormatter: (params) => getSKUName(params.value.label),
       },
-      ...uniqueWeeks.map((week) => createWeekColumns(week)),
+      ...weeksByMonth.map(({ month, monthLabel, weeks }) => {
+        return createMonthColumns(month, monthLabel, weeks);
+      }),
     ],
-    [uniqueWeeks]
+    [weeksByMonth]
   );
+
   const defaultColDef = useMemo(
     () => ({
       sortable: true,
@@ -130,6 +164,7 @@ export const usePlanning = () => {
   const onGridReady = useCallback(() => {
     console.log("Grid is ready");
   }, []);
+
   return {
     planningData,
     columnDefs,

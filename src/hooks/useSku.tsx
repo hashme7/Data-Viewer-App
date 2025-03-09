@@ -1,23 +1,43 @@
 import { useCallback, useState } from "react";
 import { useDispatch } from "react-redux";
-import { addSKU, deleteSKU } from "../redux/slices/skuSlice";
+import { addSKU, deleteSKU, editSKU } from "../redux/slices/skuSlice";
 import { useSelector } from "react-redux";
 import { RootState } from "../redux/store";
 import { ColDef } from "ag-grid-community";
-import { FaTrash } from "react-icons/fa";
+import { FaEdit, FaTrash } from "react-icons/fa";
+import { SKU } from "../types/interfaces";
 
-export const useSku = () => {
+export const useSku = (handleDeleteClick:(id:string)=>void) => {
   const rowData = useSelector((state: RootState) => state.skus);
   const dispatch = useDispatch();
-
   const [modalOpen, setModalOpen] = useState(false);
+  const [editData, setEditData] = useState<SKU | null>(null);
 
-  const openModal = () => {
+  const openModal = (sku?: SKU) => {
+    if (sku) {
+      setEditData(sku);
+    } else {
+      setEditData(null);
+    }
     setModalOpen(true);
   };
 
   const handleCloseModal = () => {
     setModalOpen(false);
+    setEditData(null);
+  };
+
+  const addSku = (sku:SKU
+  ) => {
+    dispatch(
+      addSKU(sku)
+    );
+    handleCloseModal();
+  };
+
+  const editSku = (sku: SKU) => {
+    dispatch(editSKU(sku));
+    handleCloseModal();
   };
 
   const deleteSku = useCallback(
@@ -26,42 +46,30 @@ export const useSku = () => {
     },
     [dispatch]
   );
-  const addSku = (
-    id: string,
-    label: string,
-    classValue: string,
-    department: string,
-    price: number,
-    cost: number
-  ) => {
-    dispatch(
-      addSKU({
-        id,
-        label,
-        class: classValue,
-        department,
-        price,
-        cost,
-      })
-    );
-    handleCloseModal();
-  };
-  const columnDefs: ColDef[] = [
+
+  const columnDefs = (handleEditClick: (sku: SKU) => void): ColDef[] => [
     {
       headerName: "",
       width: 50,
       cellRenderer: (params: any) => (
-        <button onClick={() => deleteSku(params.data.id)}>
+        <button onClick={() => handleDeleteClick(params.data.id)}>
           <FaTrash style={{ color: "black" }} />
         </button>
       ),
-      autoHeight: false,
+    },
+    {
+      headerName: "Edit",
+      width: 80,
+      cellRenderer: (params: any) => (
+        <button onClick={() => handleEditClick(params.data)}>
+          <FaEdit style={{ color: "black" }} />
+        </button>
+      ),
     },
     {
       headerName: "SKU",
       field: "label",
       width: 250,
-      autoHeight: false,
     },
     {
       headerName: "Price",
@@ -77,11 +85,14 @@ export const useSku = () => {
 
   return {
     addSku,
+    editSku,
     deleteSku,
     openModal,
     modalOpen,
     rowData,
     handleCloseModal,
+    editData,
     columnDefs,
   };
 };
+

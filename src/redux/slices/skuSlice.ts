@@ -1,6 +1,6 @@
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
 import { SKU } from "../../types/interfaces";
-import { Skus } from "../../constants/datas";
+import { Skus } from "../../constants/data/Skus";
 
 const initialState: SKU[] = Skus;
 
@@ -14,8 +14,15 @@ const storeSlice = createSlice({
     deleteSKU: (state, action: PayloadAction<string>) => {
       return state.filter((sku: SKU) => sku.id !== action.payload);
     },
+    editSKU: (state, action: PayloadAction<SKU>) => {
+      const index = state.findIndex((sku) => sku.id === action.payload.id);
+      if (index !== -1) {
+        state[index] = action.payload;
+      }
+    },
   },
 });
 
-export const { addSKU, deleteSKU } = storeSlice.actions;
+export const { addSKU, deleteSKU, editSKU } = storeSlice.actions;
 export default storeSlice.reducer;
+

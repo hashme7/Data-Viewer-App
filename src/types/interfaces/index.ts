@@ -15,9 +15,11 @@ export interface SKU {
 }
 
 export interface StoreInput {
+  id?:number,
   name: string;
   city: string;
   state: string;
+  code:string,
 }
 
 export interface WeekData {
@@ -36,13 +38,26 @@ export interface PlanningData {
   weeks: WeekData[];
 }
 
-export interface RawPlanningData {
+export interface IPlanning {
   store: string;
   sku: string;
   week: string;
   salesUnits: number;
-  salesDollars?: number;
-  costDollars?: number;
-  gmDollars?: number;
-  gmPercent?: number;
+}
+
+export interface ChartProps{
+  selectedStore:string
+}
+export interface ICalender {
+  seqNo: number;
+  week: string;
+  weekLabel: string;
+  month: string;
+  monthLabel: string;
+}
+export interface IChart{
+  week: string,
+  gmDollars: number,
+  salesDollars: number,
+  gmPercentage:number,
 }

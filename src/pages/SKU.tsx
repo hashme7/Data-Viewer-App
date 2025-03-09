@@ -1,4 +1,4 @@
-import React, { useRef } from "react";
+import React, { useRef, useState } from "react";
 import { AgGridReact } from "ag-grid-react";
 import {
   AllCommunityModule,
@@ -11,6 +11,8 @@ import { RootState } from "../redux/store";
 import "../css/Table.css";
 import { useSku } from "../hooks/useSku";
 import Modal from "../components/Modal";
+import { SKU } from "../types/interfaces";
+import ConfirmationModal from "../components/confirmationModal";
 
 ModuleRegistry.registerModules([
   ClientSideRowModelModule,
@@ -18,16 +20,25 @@ ModuleRegistry.registerModules([
   RowDragModule,
 ]);
 
-ModuleRegistry.registerModules([
-  ClientSideRowModelModule,
-  AllCommunityModule,
-  RowDragModule,
-]);
-
-const SKU: React.FC = () => {
-  const skus = useSelector((state: RootState) => state.skus);
-  const { openModal, modalOpen, addSku, handleCloseModal, columnDefs } =
-    useSku();
+const SKUPage: React.FC = () => {
+  const [confirmModalOpen, setConfirmModalOpen] = useState(false);
+  const skus: SKU[] = useSelector((state: RootState) => state.skus);
+  const [selectedSkuId, setSelectedSkuId] = useState<string | null>(null);
+  const handleDeleteClick = (id: string) => {
+    setSelectedSkuId(id);
+    setConfirmModalOpen(true);
+  };
+  const {
+    openModal,
+    modalOpen,
+    addSku,
+    editSku,
+    handleCloseModal,
+    columnDefs,
+    deleteSku,
+  } = useSku(handleDeleteClick);
+  const [editingSku, setEditingSku] = useState<SKU | null>(null);
+  const editDataRef = useRef<SKU | null>(null);
 
   const labelRef = useRef<HTMLInputElement>(null);
   const classRef = useRef<HTMLInputElement>(null);
@@ -43,27 +54,49 @@ const SKU: React.FC = () => {
     );
   }
 
-  const handleAddSku = () => {
-    const label = labelRef.current?.value;
-    const classValue = classRef.current?.value;
-    const price = priceRef.current?.value
-      ? parseFloat(priceRef.current.value)
-      : 0;
-    const cost = costRef.current?.value ? parseFloat(costRef.current.value) : 0;
-    const department = departmentRef.current?.value;
+  const handleEditClick = (sku: SKU): void => {
+    setEditingSku(sku);
+    openModal();
+  };
 
-    if (label && classValue && department && price > 0 && cost > 0) {
-      const newSkuId = `SK${skus[skus.length - 1].id.split("k")[1] + 1}`;
-      addSku(newSkuId, label, classValue, department, price, cost);
+  const handleSaveSku = () => {
+    const updatedSku = {
+      label: labelRef.current?.value || "",
+      class: classRef.current?.value || "",
+      price: Number(priceRef.current?.value) || 0,
+      cost: Number(costRef.current?.value) || 0,
+      department: costRef.current?.value || "",
+    };
+
+    if (
+      updatedSku.label &&
+      updatedSku.class &&
+      updatedSku.department &&
+      updatedSku.price > 0 &&
+      updatedSku.cost > 0
+    ) {
+      if (editingSku?.id) {
+        editSku({ ...updatedSku, id: editingSku.id });
+      } else {
+        const newSkuId = `SK${skus.length + 1}`;
+        addSku({ ...updatedSku, id: newSkuId });
+      }
       handleCloseModal();
+      editDataRef.current = null;
     }
+  };
+  const handleConfirmDelete = (selectedStoreId: string) => {
+    if (selectedStoreId !== null) {
+      deleteSku(selectedStoreId);
+    }
+    setConfirmModalOpen(false);
   };
 
   return (
     <div className="w-full h-screen bg-gray-300 p-2 ag-theme-alpine">
       <div className="h-[calc(100vh-12rem)] w-full ag-theme-alpine">
         <AgGridReact
-          columnDefs={columnDefs}
+          columnDefs={columnDefs(handleEditClick)}
           rowData={skus || []}
           defaultColDef={{ resizable: true, sortable: true }}
           rowHeight={60}
@@ -77,52 +110,69 @@ const SKU: React.FC = () => {
       <div className="p-5">
         <button
           className="h-10 w-auto p-2 bg-[#F28C76] rounded"
-          onClick={openModal}
+          onClick={() => {
+            editDataRef.current = null;
+            openModal();
+          }}
         >
-          NEW STORE
+          NEW SKU
         </button>
       </div>
       <Modal isOpen={modalOpen} onClose={handleCloseModal}>
-        <h2 className="text-lg font-semibold mb-4">Add New Sku</h2>
+        <h2 className="text-lg font-semibold mb-4">
+          {editingSku ? "Edit SKU" : "Add New SKU"}
+        </h2>
         <input
           type="text"
           ref={labelRef}
           placeholder="Label"
+          defaultValue={editingSku?.label || ""}
           className="w-full p-2 mb-2 border rounded"
         />
         <input
           type="text"
           ref={classRef}
           placeholder="Class"
+          defaultValue={editingSku?.class || ""}
           className="w-full p-2 mb-2 border rounded"
         />
         <input
           type="number"
           ref={priceRef}
           placeholder="Price"
+          defaultValue={editingSku?.price?.toString() || ""}
           className="w-full p-2 mb-2 border rounded"
         />
         <input
           type="number"
           ref={costRef}
           placeholder="Cost"
+          defaultValue={editingSku?.cost?.toString() || ""}
           className="w-full p-2 mb-2 border rounded"
         />
         <input
           type="text"
           ref={departmentRef}
           placeholder="Department"
+          defaultValue={editingSku?.department || ""}
           className="w-full p-2 mb-2 border rounded"
         />
         <button
-          onClick={handleAddSku}
+          onClick={handleSaveSku}
           className="px-4 py-2 bg-[#F28C76] hover:cursor-pointer text-black rounded"
         >
-          Add Sku
+          {editDataRef ? "Save Changes" : "Add SKU"}
         </button>
       </Modal>
+      <ConfirmationModal
+        isOpen={confirmModalOpen}
+        onClose={() => setConfirmModalOpen(false)}
+        onConfirm={() => selectedSkuId && handleConfirmDelete(selectedSkuId)}
+        title="Delete Sku"
+        message={`Are you sure you want to delete (${selectedSkuId}) this Sku?`}
+      />
     </div>
   );
 };
 
-export default SKU;
+export default SKUPage;

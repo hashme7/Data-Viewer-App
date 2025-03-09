@@ -1,9 +1,9 @@
 import { useState, useCallback } from "react";
 import { useSelector, useDispatch } from "react-redux";
 import { RootState } from "../redux/store";
-import { addStore, deleteStore } from "../redux/slices/storeSlice";
-import { StoreInput } from "../types/interfaces";
-import { FaTrash } from "react-icons/fa";
+import { addStore, deleteStore, updateStore } from "../redux/slices/storeSlice";
+import { Store, StoreInput } from "../types/interfaces";
+import { FaTrash, FaEdit } from "react-icons/fa";
 import { ColDef } from "ag-grid-community";
 
 const useStore = (handleDeleteClick: (id: number) => void) => {
@@ -13,22 +13,30 @@ const useStore = (handleDeleteClick: (id: number) => void) => {
   const [isModalOpen, setIsModalOpen] = useState(false);
 
   const handleOpenModal = () => setIsModalOpen(true);
-  const handleCloseModal = () => {
-    setIsModalOpen(false);
-  };
+  const handleCloseModal = () => setIsModalOpen(false);
 
-  const handleAddStore = useCallback((newStore: StoreInput) => {
-    if (newStore.name && newStore.city && newStore.state) {
-      dispatch(
-        addStore({
-          id: rowData.length + 1,
-          code: `ST +${rowData[rowData.length - 1].code.split("T")[1] + 1}`,
-          ...newStore,
-        })
-      );
+  const handleAddStore = useCallback(
+    (newStore: StoreInput) => {
+      if (newStore.name && newStore.city && newStore.state) {
+        dispatch(
+          addStore({
+            id: rowData[rowData.length -1].id + 1,
+            ...newStore,
+          })
+        );
+        handleCloseModal();
+      }
+    },
+    [dispatch, rowData]
+  );
+
+  const handleUpdateStore = useCallback(
+    (updatedStore: Store) => {
+      dispatch(updateStore(updatedStore));
       handleCloseModal();
-    }
-  }, []);
+    },
+    [dispatch]
+  );
 
   const deleteRow = useCallback(
     (id: number) => {
@@ -37,13 +45,23 @@ const useStore = (handleDeleteClick: (id: number) => void) => {
     [dispatch]
   );
 
-  const columnDefs: ColDef[] = [
+  const columnDefs = (handleEditClick: (store: any) => void): ColDef[] => [
     {
       headerName: "",
       field: "id",
       cellRenderer: (params: any) => (
         <button onClick={() => handleDeleteClick(params.data.id)}>
           <FaTrash style={{ color: "black" }} />
+        </button>
+      ),
+      width: 50,
+    },
+    {
+      headerName: "Edit",
+      field: "edit",
+      cellRenderer: (params: any) => (
+        <button onClick={() => handleEditClick(params.data)}>
+          <FaEdit style={{ color: "black" }} />
         </button>
       ),
       width: 50,
@@ -67,6 +85,7 @@ const useStore = (handleDeleteClick: (id: number) => void) => {
     handleOpenModal,
     handleCloseModal,
     handleAddStore,
+    handleUpdateStore,
     deleteRow,
     columnDefs,
   };
