@@ -18,7 +18,6 @@ export const selectPlanningSales = createSelector(
         calendarMap.set(cal.week, { ...cal });
       }
     });
-    calendarMap.forEach((x) => console.log(x, "amp"));
 
     const groupedData = new Map<
       string,
@@ -53,8 +52,8 @@ export const selectPlanningSales = createSelector(
           const costDollars = salesUnits * (sku?.cost ?? 0);
           const gmDollars = salesDollars - costDollars;
           const gmPercentage =
-            salesDollars !== 0 ? (gmDollars / salesDollars) * 100 : 0;
-
+          salesDollars !== 0 ? (gmDollars / salesDollars) * 100 : 0;
+          
           row.weeks[cal.month].set(cal.week, {
             ...cal,
             salesUnits,
@@ -66,7 +65,7 @@ export const selectPlanningSales = createSelector(
         } 
       }
     });
-
+    
     // Convert weeks maps to arrays
     groupedData.forEach((data) => {
       Object.keys(data.weeks).forEach((month) => {

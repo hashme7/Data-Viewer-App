@@ -12,7 +12,6 @@ import { updateSalesUnits } from "../redux/slices/planingSlice";
 export const usePlanning = () => {
   // Selects necessary data from Redux store
   const planningData = useSelector(selectPlanningSales);
-  console.log(planningData,"plannin")
   const skus = useSelector((state: RootState) => state.skus);
   const stores = useSelector((state: RootState) => state.stores);
   const dispatch = useDispatch();
@@ -133,7 +132,6 @@ export const usePlanning = () => {
             const weekData = params.data.weeks[month]?.find(
               (w: any) => w.week === weekNumber
             );
-            console.log(weekData, weekData?.gmDollars, weekNumber, "weekData");
             const gmPercentage =
               (weekData?.gmDollars / weekData?.salesDollars) * 100;
             return gmPercentage;
@@ -149,7 +147,7 @@ export const usePlanning = () => {
   const weeksByMonth = useMemo(() => {
     const monthsMap = new Map<
       string,
-      { monthLabel: string; weeks: string[] }
+      { monthLabel: string; weeks: Set<string> }
     >();
 
     planningData.forEach(({ weeks }) => {
@@ -158,9 +156,9 @@ export const usePlanning = () => {
         weekArray.forEach(
           ({ week, monthLabel }: { week: string; monthLabel: string }) => {
             if (!monthsMap.has(month)) {
-              monthsMap.set(month, { monthLabel, weeks: [] });
+              monthsMap.set(month, { monthLabel, weeks: new Set() });
             }
-            monthsMap.get(month)?.weeks.push(week);
+            monthsMap.get(month)?.weeks.add(week);
           }
         );
       });
@@ -170,7 +168,7 @@ export const usePlanning = () => {
       ([month, { monthLabel, weeks }]) => ({
         month,
         monthLabel,
-        weeks: weeks.sort(),
+        weeks: Array.from(weeks).sort(), // Convert Set to Array and sort
       })
     );
   }, [planningData]);
