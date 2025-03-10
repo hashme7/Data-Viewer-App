@@ -197,7 +197,7 @@ export const usePlanning = () => {
         filter: true,
         sortable: true,
         valueFormatter: (params) => {
-          return getSKUName(params.data.sku.label);
+          return getSKUName(params.data?.sku?.label);
         },
       },
       ...weeksByMonth.map(({ month, monthLabel, weeks }) =>
