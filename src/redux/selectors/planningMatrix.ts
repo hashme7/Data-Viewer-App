@@ -35,11 +35,6 @@ export const selectPlanningSales = createSelector(
           weeks: {},
         });
       }
-      if (!sku) {
-        console.log("sku is not there ", item);
-      } else {
-        console.log("founded .....");
-      }
 
       const row: { store: string; sku: SKU; weeks: Record<string, any> } =
         groupedData.get(key);

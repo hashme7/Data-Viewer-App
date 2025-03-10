@@ -2,7 +2,7 @@ export const Skus = [
   {
     id: "SK00158",
     label: "Crew Neck Merino Wool Sweater",
-    category: "Tops",
+    class: "Tops",
     department: "Men's Apparel",
     price: 114.99,
     cost: 18.28,
@@ -10,7 +10,7 @@ export const Skus = [
   {
     id: "SK00269",
     label: "Faux Leather Leggings",
-    category: "Jewelry",
+    class: "Jewelry",
     department: "Footwear",
     price: 9.99,
     cost: 8.45,
@@ -18,7 +18,7 @@ export const Skus = [
   {
     id: "SK00300",
     label: "Fleece-Lined Parka",
-    category: "Jewelry",
+    class: "Jewelry",
     department: "Unisex Accessories",
     price: 199.99,
     cost: 17.8,
@@ -26,7 +26,7 @@ export const Skus = [
   {
     id: "SK00304",
     label: "Cotton Polo Shirt",
-    category: "Tops",
+    class: "Tops",
     department: "Women's Apparel",
     price: 139.99,
     cost: 10.78,
@@ -34,7 +34,7 @@ export const Skus = [
   {
     id: "SK00766",
     label: "Foldable Travel Hat",
-    category: "Tops",
+    class: "Tops",
     department: "Footwear",
     price: 44.99,
     cost: 27.08,
@@ -42,7 +42,7 @@ export const Skus = [
   {
     id: "SK00786",
     label: "Chic Quilted Wallet",
-    category: "Bottoms",
+    class: "Bottoms",
     department: "Footwear",
     price: 14.99,
     cost: 4.02,
@@ -50,7 +50,7 @@ export const Skus = [
   {
     id: "SK00960",
     label: "High-Slit Maxi Dress",
-    category: "Outerwear",
+    class: "Outerwear",
     department: "Sportswear",
     price: 74.99,
     cost: 47.47,
@@ -58,7 +58,7 @@ export const Skus = [
   {
     id: "SK01183",
     label: "Turtleneck Cable Knit Sweater",
-    category: "Footwear",
+    class: "Footwear",
     department: "Footwear",
     price: 49.99,
     cost: 22.6,
@@ -66,7 +66,7 @@ export const Skus = [
   {
     id: "SK01189",
     label: "Retro-Inspired Sunglasses",
-    category: "Bottoms",
+    class: "Bottoms",
     department: "Women's Apparel",
     price: 194.99,
     cost: 115.63,
@@ -74,7 +74,7 @@ export const Skus = [
   {
     id: "SK01193",
     label: "Stretch Denim Overalls",
-    category: "Bottoms",
+    class: "Bottoms",
     department: "Unisex Accessories",
     price: 129.99,
     cost: 47.06,
@@ -82,7 +82,7 @@ export const Skus = [
   {
     id: "SK01249",
     label: "Adjustable Elastic Headband",
-    category: "Footwear",
+    class: "Footwear",
     department: "Women's Apparel",
     price: 19.99,
     cost: 1.34,
@@ -90,7 +90,7 @@ export const Skus = [
   {
     id: "SK01319",
     label: "Adjustable Baseball Cap",
-    category: "Jewelry",
+    class: "Jewelry",
     department: "Men's Apparel",
     price: 4.99,
     cost: 2.29,
@@ -98,7 +98,7 @@ export const Skus = [
   {
     id: "SK01349",
     label: "Cotton Polo Shirt",
-    category: "Bottoms",
+    class: "Bottoms",
     department: "Unisex Accessories",
     price: 114.99,
     cost: 60.94,
@@ -106,7 +106,7 @@ export const Skus = [
   {
     id: "SK01549",
     label: "Faux Suede Ankle Boots",
-    category: "Tops",
+    class: "Tops",
     department: "Sportswear",
     price: 94.99,
     cost: 71.53,
@@ -114,7 +114,7 @@ export const Skus = [
   {
     id: "SK01566",
     label: "Striped Cotton Socks",
-    category: "Accessories",
+    class: "Accessories",
     department: "Sportswear",
     price: 9.99,
     cost: 6.91,
@@ -122,7 +122,7 @@ export const Skus = [
   {
     id: "SK01642",
     label: "Performance Compression Tights",
-    category: "Outerwear",
+    class: "Outerwear",
     department: "Sportswear",
     price: 54.99,
     cost: 59.61,
@@ -130,7 +130,7 @@ export const Skus = [
   {
     id: "SK01733",
     label: "Vintage Logo Hoodie",
-    category: "Accessories",
+    class: "Accessories",
     department: "Men's Apparel",
     price: 94.99,
     cost: 84.45,
@@ -138,7 +138,7 @@ export const Skus = [
   {
     id: "SK01896",
     label: "Floral Chiffon Wrap Dress",
-    category: "Accessories",
+    class: "Accessories",
     department: "Unisex Accessories",
     price: 149.99,
     cost: 68.55,
@@ -146,7 +146,7 @@ export const Skus = [
   {
     id: "SK01927",
     label: "Asymmetrical Hem Skirt",
-    category: "Jewelry",
+    class: "Jewelry",
     department: "Sportswear",
     price: 99.99,
     cost: 66.89,
@@ -154,7 +154,7 @@ export const Skus = [
   {
     id: "SK01950",
     label: "Slim Fit Pinstripe Suit",
-    category: "Bottoms",
+    class: "Bottoms",
     department: "Women's Apparel",
     price: 99.99,
     cost: 13.3,
@@ -162,7 +162,7 @@ export const Skus = [
   {
     id: "SK02029",
     label: "Chunky Heel Sandals",
-    category: "Jewelry",
+    class: "Jewelry",
     department: "Unisex Accessories",
     price: 89.99,
     cost: 46.7,
@@ -170,7 +170,7 @@ export const Skus = [
   {
     id: "SK02429",
     label: "Suede Fringe Vest",
-    category: "Bottoms",
+    class: "Bottoms",
     department: "Footwear",
     price: 184.99,
     cost: 159.65,
@@ -178,7 +178,7 @@ export const Skus = [
   {
     id: "SK02448",
     label: "Relaxed Fit Cargo Pants",
-    category: "Bottoms",
+    class: "Bottoms",
     department: "Sportswear",
     price: 149.99,
     cost: 7.2,
@@ -186,7 +186,7 @@ export const Skus = [
   {
     id: "SK02562",
     label: "Corduroy A-Line Skirt",
-    category: "Jewelry",
+    class: "Jewelry",
     department: "Footwear",
     price: 129.99,
     cost: 48.62,
@@ -194,7 +194,7 @@ export const Skus = [
   {
     id: "SK02642",
     label: "Formal Dress Shoes",
-    category: "Bottoms",
+    class: "Bottoms",
     department: "Women's Apparel",
     price: 164.99,
     cost: 161.69,
@@ -202,7 +202,7 @@ export const Skus = [
   {
     id: "SK02768",
     label: "Tailored Corduroy Blazer",
-    category: "Accessories",
+    class: "Accessories",
     department: "Sportswear",
     price: 89.99,
     cost: 62.99,
@@ -210,7 +210,7 @@ export const Skus = [
   {
     id: "SK02805",
     label: "Foldable Travel Hat",
-    category: "Outerwear",
+    class: "Outerwear",
     department: "Women's Apparel",
     price: 194.99,
     cost: 56.16,
@@ -218,7 +218,7 @@ export const Skus = [
   {
     id: "SK02904",
     label: "Asymmetrical Hem Skirt",
-    category: "Tops",
+    class: "Tops",
     department: "Unisex Accessories",
     price: 89.99,
     cost: 67.94,
@@ -226,7 +226,7 @@ export const Skus = [
   {
     id: "SK03182",
     label: "Plaid Flannel Shirt",
-    category: "Tops",
+    class: "Tops",
     department: "Unisex Accessories",
     price: 124.99,
     cost: 17.5,
@@ -234,7 +234,7 @@ export const Skus = [
   {
     id: "SK03289",
     label: "Oversized Hoodie",
-    category: "Tops",
+    class: "Tops",
     department: "Women's Apparel",
     price: 159.99,
     cost: 122.23,
@@ -242,7 +242,7 @@ export const Skus = [
   {
     id: "SK03348",
     label: "Woven Straw Sun Hat",
-    category: "Jewelry",
+    class: "Jewelry",
     department: "Footwear",
     price: 164.99,
     cost: 8.91,
@@ -250,7 +250,7 @@ export const Skus = [
   {
     id: "SK03569",
     label: "Faux Fur Winter Coat",
-    category: "Tops",
+    class: "Tops",
     department: "Men's Apparel",
     price: 9.99,
     cost: 7.37,
@@ -258,7 +258,7 @@ export const Skus = [
   {
     id: "SK03572",
     label: "Casual Cotton Romper",
-    category: "Tops",
+    class: "Tops",
     department: "Footwear",
     price: 119.99,
     cost: 52.32,
@@ -266,7 +266,7 @@ export const Skus = [
   {
     id: "SK03636",
     label: "Racerback Sports Bra",
-    category: "Footwear",
+    class: "Footwear",
     department: "Unisex Accessories",
     price: 14.99,
     cost: 8.72,
@@ -274,7 +274,7 @@ export const Skus = [
   {
     id: "SK03725",
     label: "Polarized Sports Sunglasses",
-    category: "Tops",
+    class: "Tops",
     department: "Men's Apparel",
     price: 79.99,
     cost: 9.44,
@@ -282,7 +282,7 @@ export const Skus = [
   {
     id: "SK03980",
     label: "Chunky Platform Sneakers",
-    category: "Tops",
+    class: "Tops",
     department: "Unisex Accessories",
     price: 109.99,
     cost: 61.7,
