@@ -24,7 +24,8 @@ export const selectPlanningSales = createSelector(
     salesData.data.forEach((item: IPlanning) => {
       const storeName =
         stores.find((s) => s.code === item.store)?.name || item.store;
-      const sku = products.find((s) => s.id === item.sku);
+
+      const sku = products.find((s) => s.id == item.sku);
       const key = `${storeName}-${sku?.label}`;
 
       if (!groupedData.has(key)) {
@@ -33,6 +34,11 @@ export const selectPlanningSales = createSelector(
           sku: sku,
           weeks: {},
         });
+      }
+      if (!sku) {
+        console.log("sku is not there ", item);
+      } else {
+        console.log("founded .....");
       }
 
       const row: { store: string; sku: SKU; weeks: Record<string, any> } =
@@ -51,13 +57,12 @@ export const selectPlanningSales = createSelector(
             if (!row.weeks[cal.month]) {
               row.weeks[cal.month] = [];
             }
-            const salesUnits = item.salesUnits;
-            const salesDollars = salesUnits * row.sku.price;
-            const costDollars = salesUnits * row.sku.cost;
+            const salesUnits = item.salesUnits ?? 0;
+            const salesDollars = salesUnits * (sku?.price ?? 0);
+            const costDollars = salesUnits * (sku?.cost ?? 0);
             const gmDollars = salesDollars - costDollars;
             const gmPercentage =
               salesDollars !== 0 ? (gmDollars / salesDollars) * 100 : 0;
-
             row.weeks[cal.month].push({
               ...cal,
               salesUnits,

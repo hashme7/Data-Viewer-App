@@ -21,19 +21,25 @@ ModuleRegistry.registerModules([
  */
 const Planning: React.FC = () => {
   // Custom hook to manage planning-related data and grid configurations
-  const { planningData, columnDefs, defaultColDef, onGridReady } =
-    usePlanning();
+  const {
+    planningData,
+    columnDefs,
+    defaultColDef,
+    onGridReady,
+    onCellValueChanged,
+  } = usePlanning();
 
   return (
     // Wrapper div with height calculated dynamically to fit viewport
     <div className="h-[calc(100vh-12rem)] w-full ag-theme-alpine">
       {/* AG Grid Component for displaying planning data */}
       <AgGridReact
-        rowData={planningData} 
-        columnDefs={columnDefs} 
-        defaultColDef={defaultColDef} 
-        onGridReady={onGridReady} 
-        animateRows={true} 
+        rowData={planningData}
+        columnDefs={columnDefs}
+        defaultColDef={defaultColDef}
+        onGridReady={onGridReady}
+        animateRows={true}
+        onCellValueChanged={onCellValueChanged}
       />
     </div>
   );

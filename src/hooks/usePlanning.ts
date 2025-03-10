@@ -3,6 +3,8 @@ import { RootState } from "../redux/store";
 import { ColDef, ColGroupDef } from "ag-grid-community";
 import { useCallback, useMemo } from "react";
 import { selectPlanningSales } from "../redux/selectors/planningMatrix";
+import { useDispatch } from "react-redux";
+import { updateSalesUnits } from "../redux/slices/planingSlice";
 
 /**
  * Custom hook for handling planning data in AG Grid.
@@ -12,6 +14,7 @@ export const usePlanning = () => {
   const planningData = useSelector(selectPlanningSales);
   const skus = useSelector((state: RootState) => state.skus);
   const stores = useSelector((state: RootState) => state.stores);
+  const dispatch = useDispatch();
 
   /**
    * Retrieves the store name based on the store ID.
@@ -24,6 +27,10 @@ export const usePlanning = () => {
     },
     [stores]
   );
+  const getStoreId = useCallback((storeName: string) => {
+    const store = stores.find((s) => s.name == storeName);
+    return store ? store.code : storeName;
+  }, []);
 
   /**
    * Retrieves the SKU name based on the SKU ID.
@@ -63,18 +70,32 @@ export const usePlanning = () => {
           field: `${weekNumber}.salesUnits`,
           headerName: "Sales Units",
           type: "numericColumn",
+          cellEditor: "agTextCellEditor",
+          editable: true,
+          minWidth: 100,
           filter: "agNumberColumnFilter",
           valueFormatter: (params) => params.value?.toFixed(2),
           valueGetter: (params) => {
             const weekData = params.data.weeks[month]?.find(
               (w: any) => w.week === weekNumber
             );
-            return weekData?.salesUnits;
+            return weekData?.salesUnits ?? 0;
+          },
+          valueSetter: (params) => {
+            const weekData = params.data.weeks?.[month]?.find(
+              (w: any) => w.week === weekNumber
+            );
+            if (weekData) {
+              weekData.salesUnits = Number(params.newValue);
+              return true;
+            }
+            return false;
           },
         },
         {
           field: `${weekNumber}.salesDollars`,
           headerName: "Sales Dollars",
+          minWidth: 100,
           type: "numericColumn",
           valueFormatter: (params) =>
             params.value ? `$ ${params.value.toFixed(2)}` : "$ 0.00",
@@ -88,6 +109,7 @@ export const usePlanning = () => {
         {
           field: `${weekNumber}.gmDollars`,
           headerName: "GM Dollars",
+          minWidth: 100,
           type: "numericColumn",
           valueFormatter: (params) =>
             params.value ? `$ ${params.value.toFixed(2)}` : "$ 0.00",
@@ -102,14 +124,18 @@ export const usePlanning = () => {
           field: `${weekNumber}.gmPercent`,
           headerName: "GM Percentage",
           type: "numericColumn",
+          minWidth: 100,
           valueFormatter: (params) =>
             params.value ? `${params.value.toFixed(2)}%` : "0.00%",
           cellStyle: (params) => getGmPercentCellStyle(params.value),
           valueGetter: (params) => {
-            const weekData = params.data.weeks?.[month]?.find(
+            const weekData = params.data.weeks[month]?.find(
               (w: any) => w.week === weekNumber
             );
-            return weekData?.gmPercentage;
+            console.log(weekData, weekData?.gmDollars, weekNumber, "weekData");
+            const gmPercentage =
+              (weekData?.gmDollars / weekData?.salesDollars) * 100;
+            return gmPercentage;
           },
         },
       ],
@@ -159,7 +185,9 @@ export const usePlanning = () => {
         minWidth: 200,
         filter: true,
         sortable: true,
-        valueFormatter: (params) => getStoreName(params.value),
+        valueFormatter: (params) => {
+          return getStoreName(params.value);
+        },
       },
       {
         field: "sku",
@@ -167,7 +195,9 @@ export const usePlanning = () => {
         minWidth: 200,
         filter: true,
         sortable: true,
-        valueFormatter: (params) => getSKUName(params.value.label),
+        valueFormatter: (params) => {
+          return getSKUName(params.data.sku.label);
+        },
       },
       ...weeksByMonth.map(({ month, monthLabel, weeks }) =>
         createMonthColumns(month, monthLabel, weeks)
@@ -187,6 +217,21 @@ export const usePlanning = () => {
     }),
     []
   );
+  const onCellValueChanged = (params: any) => {
+    if (params.colDef.field.includes("salesUnits")) {
+      const { data, newValue, colDef} = params;
+      const [week] = colDef.field.split(".");
+      const storeId = getStoreId(data.store); 
+      dispatch(
+        updateSalesUnits({
+          store: storeId,
+          sku: data.sku.id,
+          week,
+          salesUnits: Number(newValue),
+        })
+      );
+    }
+  };
 
   /**
    * Callback function to handle grid readiness.
@@ -200,5 +245,6 @@ export const usePlanning = () => {
     columnDefs,
     defaultColDef,
     onGridReady,
+    onCellValueChanged,
   };
 };

@@ -42,7 +42,7 @@ export interface IPlanning {
   store: string;
   sku: string;
   week: string;
-  salesUnits: number;
+  salesUnits: null | number;
 }
 
 export interface ChartProps{

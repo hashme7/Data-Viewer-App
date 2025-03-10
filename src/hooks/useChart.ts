@@ -60,12 +60,12 @@ export const useChart = () => {
       string,
       { gmDollars: number; salesDollars: number }
     > = {};
-
+    console.log(filteredPlanning, "filteredPlanning");
     // Process each planning entry to compute sales and GM (Gross Margin) dollars
-    filteredPlanning.forEach((item) => {
+    filteredPlanning.forEach((item: IPlanning) => {
       const skuDetails = skusData.find((sku: SKU) => sku.id === item.sku);
       if (!skuDetails) return;
-
+      if (!item.salesUnits) return;
       const salesDollars = item.salesUnits * skuDetails.price;
       const gmDollars = salesDollars - item.salesUnits * skuDetails.cost;
 
@@ -77,6 +77,8 @@ export const useChart = () => {
       weeklyData[item.week].gmDollars += gmDollars;
       weeklyData[item.week].salesDollars += salesDollars;
     });
+
+    console.log(weeklyData);
 
     // Transform aggregated data into chart-compatible format
     return Object.entries(weeklyData).map(([week, values]) => {
@@ -96,6 +98,8 @@ export const useChart = () => {
       };
     });
   }, [selectedStore, planningData, skusData, calendarData]);
+
+  console.log(chartData, "chartData");
 
   /**
    * Chart.js dataset configuration for bar and line charts.
