@@ -1,5 +1,5 @@
 import { useSelector } from "react-redux";
-import { RootState } from "../redux/store";
+import { RootState, store } from "../redux/store";
 import { ColDef, ColGroupDef } from "ag-grid-community";
 import { useCallback, useMemo } from "react";
 import { selectPlanningSales } from "../redux/selectors/planningMatrix";
@@ -12,6 +12,7 @@ import { updateSalesUnits } from "../redux/slices/planingSlice";
 export const usePlanning = () => {
   // Selects necessary data from Redux store
   const planningData = useSelector(selectPlanningSales);
+  console.log(planningData,"plannin")
   const skus = useSelector((state: RootState) => state.skus);
   const stores = useSelector((state: RootState) => state.stores);
   const dispatch = useDispatch();
@@ -30,7 +31,7 @@ export const usePlanning = () => {
   const getStoreId = useCallback((storeName: string) => {
     const store = stores.find((s) => s.name == storeName);
     return store ? store.code : storeName;
-  }, []);
+  }, [store]);
 
   /**
    * Retrieves the SKU name based on the SKU ID.
